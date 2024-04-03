@@ -13,10 +13,10 @@ func main() {
 	fmt.Println("Task for create get request in golang")
 
 	// call the function for Get request
-	//PerformGetRequest()
+	PerformGetRequest()
 
 	// Call the function for Post request
-	//PerformPostJsonRequest()
+	PerformPostJsonRequest()
 
 	// call the function for Post Form request
 	PerformPostFormRequest()
