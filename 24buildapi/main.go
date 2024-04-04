@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -40,6 +41,27 @@ func (c *Course) IsEmpty() bool {
 func main() {
 	// welcome message
 	fmt.Println("Welcome in my first API")
+
+	// Create new router
+	r := mux.NewRouter()
+
+	// Seeding 
+	courses = append(courses, Course{CourseId: "2", CourseName: "ReactJS", CoursePrice: 299, Author: &Author{Fullname: "Ram Gopal", Website: "ramgopal.dev"}})
+	courses = append(courses, Course{CourseId: "3", CourseName: "MERN Stack", CoursePrice: 199, Author: &Author{Fullname: "Ram Gopal", Website: "ramgopal.dev"}})
+
+	// Routing 
+	r.HandleFunc("/", serveHome).Methods("GET")
+	r.HandleFunc("/courses", getAllCourses).Methods("GET")
+	r.HandleFunc("/course/{id}", getOneCourse).Methods("GET")
+	r.HandleFunc("/course", createOneCourse).Methods("POST")
+	r.HandleFunc("/course/{id}", updateOneCourse).Methods("PUT")
+	r.HandleFunc("/course/{id}", deleteOneCourse).Methods("DELETE")
+
+
+	// Listen to a port
+	log.Fatal(http.ListenAndServe(":4000", r))
+
+
 }
 
 
@@ -47,7 +69,7 @@ func main() {
 
 // serve home route
 func serveHome(w http.ResponseWriter, r *http.Request){
-	w.Write([]byte("Welcome in API home page"))
+	w.Write([]byte("<h1>Welcome in API home page</h1>"))
 }
 
 // Controller for get all Courses
@@ -71,8 +93,8 @@ func getOneCourse(w http.ResponseWriter, r *http.Request){
 			json.NewEncoder(w).Encode(course)
 		}
 	}
-	json.NewEncoder(w).Encode("No Course found with given id")
-	return
+	//json.NewEncoder(w).Encode("No Course found with given id")
+	//return
 }
 
 // Controller for create a new course
@@ -92,6 +114,9 @@ func createOneCourse(w http.ResponseWriter, r *http.Request){
 		json.NewEncoder(w).Encode("No data inside JSON")
 		return
 	}
+
+	//TODO: check only if title idsduplicate
+	// loop, title matches with course.coursename, JSON
 
 	// generate unique id, string
 	// append course into course
@@ -139,6 +164,7 @@ func deleteOneCourse(w http.ResponseWriter, r *http.Request){
 	for index, course := range courses {
 		if course.CourseId == params["id"] {
 			courses = append(courses[:index], courses[index+1:]...)
+			//TODO: send confirm or deny response
 			break
 		}
 	}
