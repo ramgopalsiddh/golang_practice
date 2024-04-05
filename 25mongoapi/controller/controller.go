@@ -72,3 +72,35 @@ func updateOneMovie(movieId string){
 	}
 	fmt.Println("Modified count: ", result)
 }
+
+
+// function for Delete one record
+func deleteOneMovie(movieId string){
+	id, _ :=  primitive.ObjectIDFromHex(movieId)
+	// filter from db
+	filter := bson.M{"_id": id}
+	// perform operation
+	deleteCount, err := collection.DeleteOne(context.Background(), filter)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// message to show delete successfull
+	fmt.Println("Movie got delete with delete count: ", deleteCount)
+}
+
+
+// function for Delete all records from MongoDB
+func deleteAllMovie() int64{
+	// pass direct bson as variable because this is not use tomuch
+	deleteResult, err := collection.DeleteMany(context.Background(), bson.D{{}}, nil) // empty parathese means delete all parameter
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// print count of total deleted record
+	fmt.Println("Number of movies delete: ", deleteResult.DeletedCount)
+	return deleteResult.DeletedCount
+}
