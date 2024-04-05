@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/ramgopalsiddh/model"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -37,4 +40,35 @@ func init(){
 
 	// collection instance
 	fmt.Println("Collection instance/reference is ready")
+}
+
+
+// MongoDB helpers 
+
+// function for insert 1 record 
+func insertOneMovie(movie model.Netflix){  // call movie from Netflix struct inside package model 
+	inserted, err := collection.InsertOne(context.Background(), movie)
+
+	// error 
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Success message
+	fmt.Println("Inserted one movie in db with id:", inserted.InsertedID)
+}
+
+
+// functon for update 1 record
+func updateOneMovie(movieId string){
+	id, _ := primitive.ObjectIDFromHex(movieId)
+	// inside MongoDB has no Json it's bson these are same but bson give more things
+	filter := bson.M{"_id": id}
+	update := bson.M{"$set": bson.M{"watched": true}}
+
+	// find out how many record updated
+	result, err := collection.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Modified count: ", result)
 }
