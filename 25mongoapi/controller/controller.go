@@ -48,19 +48,6 @@ func init(){
 
 // MongoDB helpers 
 
-// function for insert 1 record 
-func insertOneMovie(movie model.Netflix){  // call movie from Netflix struct inside package model 
-	inserted, err := collection.InsertOne(context.Background(), movie)
-
-	// error 
-	if err != nil {
-		log.Fatal(err)
-	}
-	// Success message
-	fmt.Println("Inserted one movie in db with id:", inserted.InsertedID)
-}
-
-
 // functon for update 1 record
 func updateOneMovie(movieId string){
 	id, _ := primitive.ObjectIDFromHex(movieId)
@@ -150,9 +137,21 @@ func CreateMovie(w http.ResponseWriter, r *http.Request){
 
 	// add movie
 	var movie model.Netflix
-	_ = json.NewDecoder(r.Body).Decode(&movie)
-	insertOneMovie(movie)
+	err := json.NewDecoder(r.Body).Decode(&movie)
+	fmt.Printf("movie: %v \n", movie)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	inserted, err := collection.InsertOne(context.Background(), movie)
+	// return json after operation
 	json.NewEncoder(w).Encode(movie)
+	// error 
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Success message
+	fmt.Println("Inserted one movie in db with id:", inserted.InsertedID)
 }
 
 
