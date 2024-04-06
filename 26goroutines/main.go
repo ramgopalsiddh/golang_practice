@@ -7,6 +7,10 @@ import (
 	"sync"
 )
 
+var signals = []string{"test"}
+
+var mut sync.Mutex // ponter
+
 // this work for wait 
 var wg sync.WaitGroup   // pointer
 
@@ -29,6 +33,7 @@ func main() {
 
 	// this wait group stop exit to main (this send signal main and say my friend wg waight inside main please wait for that)
 	wg.Wait()
+	fmt.Println(signals)
 
 
 	// Concurrency and Goroutines example
@@ -60,6 +65,11 @@ func getStatusCode(endpoint string){
 
 	if err != nil {
 		fmt.Println("oops problem in endpoint")
+	} else {
+		mut.Lock()
+		signals = append(signals, endpoint)
+		mut.Unlock()
+
+		fmt.Printf("%d status code for %s\n ", result.StatusCode, endpoint)
 	}
-	fmt.Printf("%d status code for %s\n ", result.StatusCode, endpoint)
 }
