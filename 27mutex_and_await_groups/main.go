@@ -9,11 +9,14 @@ import (
 
 
 func main() {
+	// print welcome message
 	fmt.Println("Welcome in Mutex and Await groups example")
 
 	wg := &sync.WaitGroup{}
+	// use mutex for resolve race condition
 	mut := &sync.RWMutex{}
 
+	// inislize value
 	var score = []int{0}
 
 	wg.Add(4)
