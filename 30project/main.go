@@ -22,4 +22,29 @@ func main() {
 		return
 	}
 
+
+	fmt.Printf("What is better, RTX 3080 or RTX 3090? ")
+	var answer1 string
+	var answer2 string
+	fmt.Scan(&answer1, &answer2)
+
+	if answer1 + " " + answer2 == "RTX 3090" {
+		fmt.Println("Correct !")
+	} else if answer1 + " " + answer2 == "rtx 3090" {
+		fmt.Println("Correct !")
+	} else {
+		fmt.Println("Incorrect!")
+	}
+
+
+	fmt.Printf("How many cores does the Ryzen 9 3090x have? ")
+
+	var cores uint
+	fmt.Scan(&cores)
+
+	if cores == 12 {
+		fmt.Println("Correct!")
+	} else {
+		fmt.Println("Incorrect!")
+	}
 }
