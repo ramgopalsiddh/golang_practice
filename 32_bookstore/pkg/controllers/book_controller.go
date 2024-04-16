@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/ramgopalsiddh/bookstore/pkg/models"
+	"github.com/ramgopalsiddh/bookstore/pkg/utils"
 )
 
 var NewBook models.Book
@@ -27,5 +28,18 @@ func GetBookById(w http.ResponseWriter, r *http.Request){
 	if err != nil {
 		fmt.Println("Error while parsing")
 	}
-	bookDe
+	bookDetails, _ := models.GetAllBookById(ID)
+	res, _ := json.Marshal(bookDetails)
+	w.Header().Set("Content-Type", "pkglication/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+}
+
+func CreatBook(w http.Response, r *http.Request){
+	CreatBook := &models.Book{}
+	utils.ParseBody(r, CreatBook)
+	b:=CreatBook.CreatBook()
+	res, _ := json.Marshal(b)
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
 }
