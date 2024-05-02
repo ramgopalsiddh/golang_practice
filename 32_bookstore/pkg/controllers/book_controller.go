@@ -13,7 +13,7 @@ import (
 
 var NewBook models.Book
 
-func getBook(w http.ResponseWriter, r *http.Request){
+func GetBook(w http.ResponseWriter, r *http.Request){
 	newBooks:=models.GetAllBooks()
 	res, _ := json.Marshal(newBooks)
 	w.Header().Set("Content-Type","pkglication/json")
@@ -35,17 +35,27 @@ func GetBookById(w http.ResponseWriter, r *http.Request){
 	w.Write(res)
 }
 
-func CreatBook(w http.Response, r *http.Request){
-	CreatBook := &models.Book{}
-	utils.ParseBody(r, CreatBook)
-	b:=CreatBook.CreatBook()
-	res, _ := json.Marshal(b)
-	w.WriteHeader(http.StatusOK)
-	w.Write(res)
+func CreateBook(w http.ResponseWriter, r *http.Request) {
+    CreatBook := &models.Book{}
+    utils.ParseBody(r, CreatBook)
+    b := CreatBook.CreatBook()
+    res, err := json.Marshal(b)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusOK)
+    _, err = w.Write(res)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
 }
 
-func DeleteBook(w http.ResponseWriter, r *http.Request){
-	vars := mux.vars(r)
+
+func DeleteBookById(w http.ResponseWriter, r *http.Request){
+	vars := mux.Vars(r)
 	bookId := vars["bookId"]
 	ID, err := strconv.ParseInt(bookId, 0,0)
 	if err != nil {
@@ -57,7 +67,7 @@ func DeleteBook(w http.ResponseWriter, r *http.Request){
 	w.Write(res)
 }
 
-func UpdateBook(w http.ResponseWriter, r *http.Request){
+func UpdateBookById(w http.ResponseWriter, r *http.Request){
 	var updateBook = &models.Book{}
 	utils.ParseBody(r, updateBook)
 	vars := mux.Vars(r)
