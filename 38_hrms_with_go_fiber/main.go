@@ -6,7 +6,9 @@ import (
 	"log"
 	"net/url"
 	"time"
+	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -24,7 +26,7 @@ var mg MongoInstance
 
 const dbName = "hrms"
 
-//const mongoURI = "mongodb+srv://ramgopalsiddh:Ram@8209820704%40Here@cluster0.6gq3p7r.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0" + dbName
+//const mongoURI = "mongodb+srv://ramgopalsiddh:ramsiddh%40Here@cluster0.6gq3p7r.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0" + dbName
 
 type Employee struct{
 	ID primitive.ObjectID `json:"id,omitempty" bson:"_id,idomitempty"`
@@ -35,7 +37,10 @@ type Employee struct{
 
 
 func Connect() error {
-	password := "password"
+	// Load password from .env file
+	godotenv.Load(".env")
+
+	password := os.Getenv("PASSWORD")
 	encodedPassword := url.QueryEscape(password)
 
 	mongoURI := "mongodb+srv://ramgopalsiddh:" + encodedPassword + "@cluster0.6gq3p7r.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
