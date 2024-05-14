@@ -239,6 +239,10 @@ func logRequest(handler http.Handler) http.Handler {
 	})
 }
 
+func aboutHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "./frontend/about.html")
+}
+
 func main() {
     // load API KEY and set the apiKey var
     var found bool
@@ -246,7 +250,7 @@ func main() {
     if !found {
         log.Fatal("WEATHERUNION_API_KEY not found in env variables")
     }
-
+	http.HandleFunc("/about", aboutHandler)
 	http.HandleFunc("/get_cities", cityHandler)
 	http.HandleFunc("/get_localities", localityHandler)
 	http.HandleFunc("/get_weather_data", weatherHandler)

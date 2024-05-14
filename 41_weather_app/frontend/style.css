@@ -52,3 +52,22 @@ body {
     color: red;
     margin-top: 10px;
 }
+
+/* about page style */
+.about-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.about-container h1 {
+    color: #020202;
+}
+
+.about-container p {
+    color: #030303;
+    line-height: 1.6;
+}
