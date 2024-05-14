@@ -57,6 +57,7 @@ function getWeather() {
             // Check if device type is 2 (rain gauge)
             if (weatherData.device_type === 2) {
                 document.getElementById("weather-data").innerHTML = `
+                    <p><strong style="color:red">${weatherData.message}</strong></p>
                     <p>This location has <strong>Rain gauge system</strong> that measures rain only.</p>
                     <p><strong>Temperature &#x1F321:</strong> ${weatherData.locality_weather_data.temperature} °C;</p>
                     <p><strong>Humidity &#x1F4A7:</strong> ${weatherData.locality_weather_data.humidity} % ;</p>
@@ -71,6 +72,7 @@ function getWeather() {
             // Update the weather data in the frontend
             const weatherDisplay = document.getElementById("weather-data");
             weatherDisplay.innerHTML = `
+                <p><strong style="color:red">${weatherData.message}</strong></p>
                 <p>This location has <strong>Automated weather system</strong><p>
                 <p><strong>Temperature &#x1F321:</strong> ${weatherData.locality_weather_data.temperature} °C;</p>
                 <p><strong>Humidity &#x1F4A7:</strong> ${weatherData.locality_weather_data.humidity} % ;</p>
