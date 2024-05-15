@@ -54,6 +54,9 @@ function getWeather() {
             return response.json();
         })
         .then(weatherData => {
+            // Convert wind direction from degrees to direction names
+            const windDirectionName = degToDir(weatherData.locality_weather_data.wind_direction);
+
             // Check if device type is 2 (rain gauge)
             if (weatherData.device_type === 2) {
                 document.getElementById("weather-data").innerHTML = `
@@ -62,7 +65,7 @@ function getWeather() {
                     <p><strong>Temperature &#x1F321:</strong> ${weatherData.locality_weather_data.temperature} °C;</p>
                     <p><strong>Humidity &#x1F4A7:</strong> ${weatherData.locality_weather_data.humidity} % ;</p>
                     <p><strong>Wind Speed &#x1F343:</strong> ${weatherData.locality_weather_data.wind_speed} m/s;</p>
-                    <p><strong>Wind Direction &#x1F4A8:</strong> ${weatherData.locality_weather_data.wind_direction}°;</p>
+                    <p><strong>Wind Direction &#x1F4A8:</strong>${windDirectionName}/ ${weatherData.locality_weather_data.wind_direction}°;</p>
                     <p><strong>Rain Intensity &#x1F327:</strong> ${weatherData.locality_weather_data.rain_intensity} mm/hr;</p>
                     <p><strong>Rain Accumulation &#x1F327:</strong> ${weatherData.locality_weather_data.rain_accumulation} mm ;</p>
                 `;
@@ -77,7 +80,7 @@ function getWeather() {
                 <p><strong>Temperature &#x1F321:</strong> ${weatherData.locality_weather_data.temperature} °C;</p>
                 <p><strong>Humidity &#x1F4A7:</strong> ${weatherData.locality_weather_data.humidity} % ;</p>
                 <p><strong>Wind Speed &#x1F343:</strong> ${weatherData.locality_weather_data.wind_speed} m/s;</p>
-                <p><strong>Wind Direction &#x1F4A8:</strong> ${weatherData.locality_weather_data.wind_direction}°;</p>
+                <p><strong>Wind Direction &#x1F4A8:</strong> ${windDirectionName} / ${weatherData.locality_weather_data.wind_direction}°;</p>
                 <p><strong>Rain Intensity &#x1F327:</strong> ${weatherData.locality_weather_data.rain_intensity} mm/hr;</p>
                 <p><strong>Rain Accumulation &#x1F327:</strong> ${weatherData.locality_weather_data.rain_accumulation} mm ;</p>
             `;
@@ -87,4 +90,11 @@ function getWeather() {
             console.error("Error fetching weather data:", error);
             document.getElementById("error-msg").textContent = "Failed to fetch weather data";
         });
+}
+
+// Function to convert wind direction from degrees to direction names
+function degToDir(deg) {
+    const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+    const index = Math.round(deg / 45) % 8;
+    return directions[index];
 }
