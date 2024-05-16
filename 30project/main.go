@@ -6,7 +6,7 @@ func main() {
 	fmt.Println("Welcome in Quize, Please Enter your name")
 
 	var name string
-	fmt.Scan(&name) // & use for memory location address refrence
+	fmt.Scan(&name) // & use for memory location address reference
 	fmt.Printf("Hello,%v welcome to quize game!\n", name)
 
 	fmt.Printf("Enter your age: ")

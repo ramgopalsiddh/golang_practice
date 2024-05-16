@@ -46,7 +46,7 @@ func PerformGetRequest() {
 	content, _ := ioutil.ReadAll(response.Body)
 	byteCount, _ := responseString.Write(content)
 
-	// Print responce
+	// Print response
 	fmt.Println("ByteCount is: ", byteCount)
 	fmt.Println(responseString.String())
 
@@ -107,7 +107,7 @@ func PerformPostFormRequest(){
 	// Close after request
 	defer response.Body.Close()
 
-	// Print responce
+	// Print response
 	content, _ := ioutil.ReadAll(response.Body)
 	fmt.Println(string(content))
 

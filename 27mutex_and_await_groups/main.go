@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-// Run for detailed info about race conditon use command :- `go run --race main.go`
+// Run for detailed info about race condition use command :- `go run --race main.go`
 
 
 func main() {
