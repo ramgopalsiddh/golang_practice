@@ -3,11 +3,11 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("Welcome in Quize, Please Enter your name")
+	fmt.Println("Welcome in Quiz, Please Enter your name")
 
 	var name string
 	fmt.Scan(&name) // & use for memory location address reference
-	fmt.Printf("Hello,%v welcome to quize game!\n", name)
+	fmt.Printf("Hello, %v welcome to quiz game!\n", name)
 
 	fmt.Printf("Enter your age: ")
 	var age uint
@@ -26,17 +26,15 @@ func main() {
 	num_question := 2
 
 	fmt.Printf("What is better, RTX 3080 or RTX 3090? ")
-	var answer1 string
-	var answer2 string
+	var answer1, answer2 string
 	fmt.Scan(&answer1, &answer2)
 
-	if answer1 + " " + answer2 == "RTX 3090" || answer1 + " " + answer2 == "rtx 3090" {
+	if answer1+" "+answer2 == "RTX 3090" || answer1+" "+answer2 == "rtx 3090" {
 		fmt.Println("Correct !")
 		score++
 	} else {
 		fmt.Println("Incorrect!")
 	}
-
 
 	fmt.Printf("How many cores does the Ryzen 9 3090x have? ")
 
@@ -50,7 +48,7 @@ func main() {
 		fmt.Println("Incorrect!")
 	}
 
-	fmt.Printf("You Scored %v out of %v\n",score, num_question)
+	fmt.Printf("You Scored %v out of %v\n", score, num_question)
 	percent := (float64(score) / float64(num_question)) * 100
-	fmt.Printf("You scored: %v%%.", percent)
+	fmt.Printf("You scored: %.2f%%.", percent)
 }

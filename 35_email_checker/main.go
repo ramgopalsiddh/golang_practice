@@ -3,36 +3,33 @@ package main
 import (
 	"bufio"
 	"fmt"
-	//"go/scanner"
 	"log"
 	"net"
 	"os"
 	"strings"
 )
 
-func main(){
-
+func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Printf("domain,hasMX,hasSPF,sprRecord,hasDMARC,dmarcRecord\n")
 
-	for scanner.Scan(){
+	for scanner.Scan() {
 		checkDomain(scanner.Text())
 	}
 
 	if err := scanner.Err(); err != nil {
-		log.Fatal("Error: could not read from input: %v\n", err)
+		log.Fatalf("Error: could not read from input: %v\n", err)
 	}
 }
 
-func checkDomain(domain string){
-
+func checkDomain(domain string) {
 	var hasMX, hasSPF, hasDMARC bool
 	var spfRecord, dmarcRecord string
 
 	mxRecord, err := net.LookupMX(domain)
 
 	if err != nil {
-		log.Printf("Error: %v\n, err")
+		log.Printf("Error: %v\n", err)
 	}
 
 	if len(mxRecord) > 0 {
@@ -42,11 +39,11 @@ func checkDomain(domain string){
 	txtRecords, err := net.LookupTXT(domain)
 
 	if err != nil {
-		log.Printf("Error: %v\n, err")
+		log.Printf("Error: %v\n", err)
 	}
 
-	for _, record := range txtRecords{
-		if strings.HasPrefix(record, "v=spf1"){
+	for _, record := range txtRecords {
+		if strings.HasPrefix(record, "v=spf1") {
 			hasSPF = true
 			spfRecord = record
 			break
@@ -55,16 +52,16 @@ func checkDomain(domain string){
 
 	dmarcRecords, err := net.LookupTXT("_dmarc." + domain)
 	if err != nil {
-		log.Printf("Error: %v\n, err")
+		log.Printf("Error: %v\n", err)
 	}
 
-	for _, record := range dmarcRecords{
-		if strings.HasPrefix(record, "v=DMARC1"){
+	for _, record := range dmarcRecords {
+		if strings.HasPrefix(record, "v=DMARC1") {
 			hasDMARC = true
-			dmarcRecord= record
+			dmarcRecord = record
 			break
 		}
 	}
 
-	fmt.Printf("%v, %v, %v, %v, %v, %v", domain, hasMX, hasSPF, spfRecord, hasDMARC, dmarcRecord )
+	fmt.Printf("%v, %v, %v, %v, %v, %v", domain, hasMX, hasSPF, spfRecord, hasDMARC, dmarcRecord)
 }

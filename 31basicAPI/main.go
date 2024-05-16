@@ -6,9 +6,8 @@ import (
 	"net/http"
 )
 
-
 // function for /hello route
-func helloHandler(w http.ResponseWriter, r *http.Request){
+func helloHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/hello" {
 		http.Error(w, "404 not found", http.StatusNotFound)
 		return
@@ -19,7 +18,6 @@ func helloHandler(w http.ResponseWriter, r *http.Request){
 	}
 	fmt.Fprintf(w, "hello!")
 }
-
 
 // function for /form route
 func formHandler(w http.ResponseWriter, r *http.Request) {
@@ -34,9 +32,8 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "address = %s\n", address)
 }
 
-
 // main function
-func main(){
+func main() {
 	fileServer := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fileServer)
 	http.HandleFunc("/form", formHandler)

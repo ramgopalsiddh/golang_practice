@@ -24,7 +24,6 @@ func main() {
 
 // create function for get request
 func PerformGetRequest() {
-
 	// Define url
 	const myurl = "http://localhost:8000/get"
 
@@ -56,7 +55,6 @@ func PerformGetRequest() {
 }
 
 func PerformPostJsonRequest() {
-
 	// Url
 	const myurl = "http://localhost:8000/post"
 
@@ -83,11 +81,9 @@ func PerformPostJsonRequest() {
 	// Display content
 	content, _ := ioutil.ReadAll(response.Body)
 	fmt.Println(string(content))
-
 }
 
 func PerformPostFormRequest(){
-
 	// Url
 	const myurl = "http://localhost:8000/postform"
 
@@ -110,5 +106,4 @@ func PerformPostFormRequest(){
 	// Print response
 	content, _ := ioutil.ReadAll(response.Body)
 	fmt.Println(string(content))
-
 }
