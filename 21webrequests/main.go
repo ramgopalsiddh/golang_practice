@@ -83,7 +83,7 @@ func PerformPostJsonRequest() {
 	fmt.Println(string(content))
 }
 
-func PerformPostFormRequest(){
+func PerformPostFormRequest() {
 	// Url
 	const myurl = "http://localhost:8000/postform"
 
