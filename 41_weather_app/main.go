@@ -19,6 +19,7 @@ const (
 	dbHost  = "localhost"
 	dbPort  = 5432
 )
+
 var apiKey string
 
 type City struct {
@@ -32,14 +33,14 @@ type Locality struct {
 }
 
 type Coordinates struct {
-    Latitude     float64
-	Longitude    float64
+	Latitude  float64
+	Longitude float64
 }
 
 type WeatherData struct {
-	Status             string           `json:"status"`
-	Message            string           `json:"message"`
-	DeviceType         int              `json:"device_type"`
+	Status             string          `json:"status"`
+	Message            string          `json:"message"`
+	DeviceType         int             `json:"device_type"`
 	LocalityWeatherData LocalityWeather `json:"locality_weather_data"`
 }
 
@@ -91,13 +92,16 @@ func cityHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Encode and send the data
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(cities)
+	err = json.NewEncoder(w).Encode(cities)
+	if err != nil {
+		http.Error(w, "Failed to encode city data", http.StatusInternalServerError)
+		log.Printf("Failed to encode city data: %v\n", err)
+		return
+	}
 }
 
 func localityHandler(w http.ResponseWriter, r *http.Request) {
 	city := r.URL.Query().Get("city")
-
-    // FIXME: clean and uri unescape the city??
 
 	if city == "" {
 		http.Error(w, "City is required", http.StatusBadRequest)
@@ -114,7 +118,6 @@ func localityHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-    // FIXME: fix SQL Injection
 	// Query the database to get localities for the city
 	rows, err := db.Query("SELECT locality_name FROM localities WHERE city_name = $1", city)
 	if err != nil {
@@ -143,11 +146,15 @@ func localityHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Encode and send the data
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(localities)
+	err = json.NewEncoder(w).Encode(localities)
+	if err != nil {
+		http.Error(w, "Failed to encode locality data", http.StatusInternalServerError)
+		log.Printf("Failed to encode locality data: %v\n", err)
+		return
+	}
 }
 
 func fetchCoordinates(city, locality string) (Coordinates, error) {
-    // clean and unescape the city and locality
 	// Decode URI parameters
 	decodedCity, err := url.QueryUnescape(city)
 	if err != nil {
@@ -169,18 +176,16 @@ func fetchCoordinates(city, locality string) (Coordinates, error) {
 	defer db.Close()
 
 	// Query the database to get latitude and longitude
-
-    // FIXME: check we have sql injection and fix it??
-    query := "SELECT latitude, longitude FROM localities WHERE city_name=$1 AND locality_name=$2"
+	query := "SELECT latitude, longitude FROM localities WHERE city_name=$1 AND locality_name=$2"
     log.Println("db query: ", query)
 	var latitude, longitude float64
 	err = db.QueryRow(query, decodedCity, decodedLocality).Scan(&latitude, &longitude)
 	if err != nil {
 		log.Println("Location not found in database", http.StatusNotFound)
-        return Coordinates{}, err
+		return Coordinates{}, err
 	}
 
-    return Coordinates{Latitude: latitude, Longitude: longitude,}, nil
+	return Coordinates{Latitude: latitude, Longitude: longitude}, nil
 }
 
 func weatherHandler(w http.ResponseWriter, r *http.Request) {
@@ -228,9 +233,13 @@ func weatherHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Set response headers and encode the data
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(weatherData)
+	err = json.NewEncoder(w).Encode(weatherData)
+	if err != nil {
+		http.Error(w, "Failed to encode weather data", http.StatusInternalServerError)
+		log.Printf("Failed to encode weather data: %v\n", err)
+		return
+	}
 }
-
 
 func logRequest(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -244,18 +253,18 @@ func aboutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    // load API KEY and set the apiKey var
-    var found bool
-    apiKey, found = os.LookupEnv("WEATHERUNION_API_KEY")
-    if !found {
-        log.Fatal("WEATHERUNION_API_KEY not found in env variables")
-    }
+	// Load API KEY and set the apiKey var
+	var found bool
+	apiKey, found = os.LookupEnv("WEATHERUNION_API_KEY")
+	if !found {
+		log.Fatal("WEATHERUNION_API_KEY not found in env variables")
+	}
 	http.HandleFunc("/about", aboutHandler)
 	http.HandleFunc("/get_cities", cityHandler)
 	http.HandleFunc("/get_localities", localityHandler)
 	http.HandleFunc("/get_weather_data", weatherHandler)
 	http.Handle("/", http.FileServer(http.Dir("./frontend")))
-    log.Println("Starting server on port 8080...")
-    err := http.ListenAndServe(":8080", logRequest(http.DefaultServeMux))
+	log.Println("Starting server on port 8080...")
+	err := http.ListenAndServe(":8080", logRequest(http.DefaultServeMux))
 	log.Fatal(fmt.Printf("Failed to start the server, %v", err))
 }

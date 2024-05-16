@@ -185,5 +185,7 @@ func main() {
 	router.POST("/todo", addTodo)
 	router.DELETE("/todo/:id", deleteTodoByID)
 	// Run the server
-	router.Run("localhost:9090")
+	if err := router.Run("localhost:9090"); err != nil {
+		panic(err)
+	}
 }
