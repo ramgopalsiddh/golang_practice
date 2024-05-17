@@ -14,7 +14,7 @@ import (
 	witai "github.com/wit-ai/wit-go/v2"
 )
 
-var wolframClient *wolfram.Client
+//var wolframClient *wolfram.Client
 
 func printCommandEvents(analyticsChannel <-chan *slacker.CommandEvent){
 	for event := range analyticsChannel{
@@ -28,7 +28,10 @@ func printCommandEvents(analyticsChannel <-chan *slacker.CommandEvent){
 }
 
 func main() {
-	godotenv.Load(".env")
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error loading .env file:", err)
+	}
 
 	bot := slacker.NewClient(os.Getenv("SLACK_BOT_TOKEN"), os.Getenv("SLACK_APP_TOKEN"))
 
@@ -59,10 +62,13 @@ func main() {
 			answer := value.String()
 			res, err :=  wolframClient.GetSpokentAnswerQuery(answer, wolfram.Metric, 1000)
 			if err != nil {
-				fmt.Println("There is an error ")
+				fmt.Println("Error getting answer from Wolfram Alpha:", err)
 			}
 			// print final answer
-			response.Reply(res)
+			err = response.Reply(res)
+			if err != nil {
+				fmt.Println("Error replying to the message:", err)
+			}
 		},
 	})
 
@@ -70,8 +76,7 @@ func main() {
 	ctx, cancle := context.WithCancel(context.Background())
 	defer cancle()
 
-	err := bot.Listen(ctx)
-
+	err = bot.Listen(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}

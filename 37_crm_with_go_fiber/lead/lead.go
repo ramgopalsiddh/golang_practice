@@ -20,16 +20,28 @@ type Lead struct{
 func GetLeads(c *fiber.Ctx){
 	db := database.DBconn
 	var leads []Lead
-	db.Find(&leads)
-	c.JSON(leads)
+	if err := db.Find(&leads).Error; err != nil {
+		c.Status(500).Send(err)
+		return
+	}
+	if err := c.JSON(leads); err != nil {
+		c.Status(500).Send(err)
+		return
+	}
 }
 
 func GetLead(c *fiber.Ctx){
 	id := c.Params("id")
 	db := database.DBconn
 	var lead Lead
-	db.Find(&lead, id)
-	c.JSON(lead)
+	if err := db.Find(&lead, id).Error; err != nil {
+		c.Status(500).Send(err)
+		return
+	}
+	if err := c.JSON(lead); err != nil {
+		c.Status(500).Send(err)
+		return
+	}
 }
 
 func NewLead(c *fiber.Ctx){
@@ -39,8 +51,14 @@ func NewLead(c *fiber.Ctx){
 		c.Status(503).Send(err)
 		return
 	}
-	db.Create(&lead)
-	c.JSON(lead)
+	if err := db.Create(&lead).Error; err != nil {
+		c.Status(500).Send(err)
+		return
+	}
+	if err := c.JSON(lead); err != nil {
+		c.Status(500).Send(err)
+		return
+	}
 }
 
 func DeleteLead(c *fiber.Ctx){

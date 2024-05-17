@@ -15,7 +15,7 @@ func main() {
 	fruitList = append(fruitList, "Kivi", "Peach")
 	fmt.Println(fruitList)
 
-	fruitList = append(fruitList[1:3]) // only first 2 iteams print because last range is not including
+	fruitList = append([]string{}, fruitList[:2]...) // only first 2 iteams print because last range is not including
 	fmt.Println(fruitList)
 
 

@@ -22,6 +22,9 @@ func main() {
 
 // This is serve data in web
 func serveHome(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("<h1>Welcome in Mode test</h1>"))
+	_, err := w.Write([]byte("<h1>Welcome in Mode test</h1>"))
+	if err != nil {
+		log.Println("Error writing response:", err)
+	}
 
 }

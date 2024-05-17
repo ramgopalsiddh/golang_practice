@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -27,7 +27,7 @@ func main() {
 	defer responce.Body.Close() // caller's responsibility to close the connection
 
 	// Get read all responce body of website
-	databytes, err := ioutil.ReadAll(responce.Body)
+	databytes, err := io.ReadAll(responce.Body)
 
 	if err != nil {
 		panic(err)

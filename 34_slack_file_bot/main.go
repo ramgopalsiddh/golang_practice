@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"log"
 
 	"github.com/slack-go/slack"
 	"github.com/joho/godotenv"
@@ -10,7 +11,11 @@ import (
 
 func main(){
 	// Load SLACK_BOT_TOKEN & CHANNEL_ID in .env file
-	godotenv.Load(".env")
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error loading .env file:", err)
+	}
+
 
 
 	api := slack.New(os.Getenv("SLACK_BOT_TOKEN"))

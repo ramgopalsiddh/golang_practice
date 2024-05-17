@@ -38,7 +38,9 @@ type Employee struct{
 
 func Connect() error {
 	// Load password from .env file
-	godotenv.Load(".env")
+	if err := godotenv.Load(".env"); err != nil {
+		return err
+	}
 
 	password := os.Getenv("PASSWORD")
 	encodedPassword := url.QueryEscape(password)
@@ -46,7 +48,7 @@ func Connect() error {
 	mongoURI := "mongodb+srv://ramgopalsiddh:" + encodedPassword + "@cluster0.6gq3p7r.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 	fmt.Println(mongoURI)
-	client, err := mongo.NewClient(options.Client().ApplyURI(mongoURI))
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongoURI))
 	if err != nil {
 		return err
 	}
@@ -54,7 +56,7 @@ func Connect() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	err = client.Connect(ctx)
+	err = client.Ping(ctx, nil)
 	if err != nil {
 		return err
 	}
@@ -128,7 +130,10 @@ func main(){
 
 		createdEmployee := &Employee{}
 		// decode record get from mongodb
-		createdRecord.Decode(createdEmployee)
+		if err := createdRecord.Decode(createdEmployee); err != nil {
+			return c.Status(500).SendString(err.Error())
+		}
+
 
 		return c.Status(201).JSON(createdEmployee)
 	})

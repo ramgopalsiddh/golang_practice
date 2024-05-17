@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gofiber/fiber"
 	"github.com/jinzhu/gorm"
@@ -34,6 +35,9 @@ func main(){
 	app := fiber.New()
 	initDatabase()
 	setupRoutes(app)
-	app.Listen(3000)
+	if err := app.Listen(3000); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
+
 	defer database.DBconn.Close()
 }

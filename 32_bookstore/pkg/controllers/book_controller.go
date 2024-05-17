@@ -15,10 +15,18 @@ var NewBook models.Book
 
 func GetBook(w http.ResponseWriter, r *http.Request){
 	newBooks:=models.GetAllBooks()
-	res, _ := json.Marshal(newBooks)
+	res, err := json.Marshal(newBooks)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.Header().Set("Content-Type","pkglication/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(res)
+	_, err = w.Write(res)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func GetBookById(w http.ResponseWriter, r *http.Request){
@@ -32,7 +40,10 @@ func GetBookById(w http.ResponseWriter, r *http.Request){
 	res, _ := json.Marshal(bookDetails)
 	w.Header().Set("Content-Type", "pkglication/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(res)
+	_, err = w.Write(res)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func CreateBook(w http.ResponseWriter, r *http.Request) {
@@ -64,7 +75,10 @@ func DeleteBookById(w http.ResponseWriter, r *http.Request){
 	book := models.DeleteBook(ID)
 	res, _ := json.Marshal(book)
 	w.WriteHeader(http.StatusOK)
-	w.Write(res)
+	_, err = w.Write(res)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func UpdateBookById(w http.ResponseWriter, r *http.Request){
@@ -90,5 +104,8 @@ func UpdateBookById(w http.ResponseWriter, r *http.Request){
 	res, _ := json.Marshal(bookDetails)
 	w.Header().Set("Content-Type", "pkglication/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(res)
+	_, err = w.Write(res)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }

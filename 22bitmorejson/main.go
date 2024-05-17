@@ -69,8 +69,12 @@ func DecodeJson(){
 	if checkValid {
 		fmt.Println("JSON was Vaild")
 		// Unmarshal data
-		json.Unmarshal(jsonDataFromWeb, &lcoCourses) // use & and reference data for extra validation
+		if err := json.Unmarshal(jsonDataFromWeb, &lcoCourses); err != nil {
+			panic(err)
+		}  // use & and reference data for extra validation
+
 		fmt.Printf("%#v\n", lcoCourses)
+		
 	} else {
 		fmt.Printf("JSON WAS NOT VALID\n")
 	}
@@ -78,7 +82,9 @@ func DecodeJson(){
 	// some case where you just want to add data to key value
 
 	var myOnlineData map[string]interface{}
-	json.Unmarshal(jsonDataFromWeb, &myOnlineData)
+	if err := json.Unmarshal(jsonDataFromWeb, &myOnlineData); err != nil {
+		panic(err)
+	}
 	fmt.Printf("%#v\n", myOnlineData)
 
 	// print data by use for loop

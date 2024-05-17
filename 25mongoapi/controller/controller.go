@@ -126,33 +126,44 @@ func getAllMovies() []primitive.M {
 func GetMyAllMovies(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/x-www-form-urleancode")
 	allMovies := getAllMovies()
-	json.NewEncoder(w).Encode(allMovies)
+	if err := json.NewEncoder(w).Encode(allMovies); err != nil {
+		log.Println("Error encoding JSON:", err)
+	}
 }
 
 // Create a Movie
-func CreateMovie(w http.ResponseWriter, r *http.Request){
+func CreateMovie(w http.ResponseWriter, r *http.Request) {
 	// Header 
 	w.Header().Set("Content-Type", "application/x-www-form-urleancode")
 	w.Header().Set("Allow-Control-Allow-Methods", "POST")
 
 	// add movie
 	var movie model.Netflix
-	err := json.NewDecoder(r.Body).Decode(&movie)
-	fmt.Printf("movie: %v \n", movie)
-	if err != nil {
-		log.Fatal(err)
+	if err := json.NewDecoder(r.Body).Decode(&movie); err != nil {
+		log.Println("Error decoding JSON:", err)
+		http.Error(w, "Error decoding JSON", http.StatusBadRequest)
+		return
 	}
 
 	inserted, err := collection.InsertOne(context.Background(), movie)
 	// return json after operation
-	json.NewEncoder(w).Encode(movie)
+	if err := json.NewEncoder(w).Encode(movie); err != nil {
+		log.Println("Error encoding JSON:", err)
+	}
 	// error 
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Error inserting movie:", err)
+		http.Error(w, "Error inserting movie", http.StatusInternalServerError)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(movie); err != nil {
+		log.Println("Error encoding JSON:", err)
 	}
 	// Success message
 	fmt.Println("Inserted one movie in db with id:", inserted.InsertedID)
 }
+
 
 
 // Mark movie as watched
@@ -163,8 +174,11 @@ func MarkAsWatched(w http.ResponseWriter, r *http.Request){
 	// Use id & mux and update data
 	params := mux.Vars(r)
 	updateOneMovie(params["id"])
-	json.NewEncoder(w).Encode(params["id"])
+	if err := json.NewEncoder(w).Encode(params["id"]); err != nil {
+		log.Println("Error encoding JSON:", err)
+	}
 }
+
 
 
 // Delete a movie 
@@ -175,7 +189,9 @@ func DeleteAMovie(w http.ResponseWriter, r *http.Request) {
 	// Use id & mux and delete movie
 	params := mux.Vars(r)
 	deleteOneMovie(params["id"])
-	json.NewEncoder(w).Encode(params["id"])
+	if err := json.NewEncoder(w).Encode(params["id"]); err != nil {
+		log.Println("Error encoding JSON:", err)
+	}
 }
 
 // Delete all movies 
@@ -184,5 +200,7 @@ func DeleteAllMovies(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Allow-Control-Allow-Methods", "DELETE")
 
 	count := deleteAllMovie()
-	json.NewEncoder(w).Encode(count)
+	if err := json.NewEncoder(w).Encode(count); err != nil {
+		log.Println("Error encoding JSON:", err)
+	}
 }

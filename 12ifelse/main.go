@@ -47,8 +47,7 @@ func main() {
 	
 	// comman use this in error print 
 	// we print a test error here 
-	var err error
-	err = errorFunction()
+	var err error = errorFunction()
 
 	if err != nil {
 		fmt.Println("Error:", err)
